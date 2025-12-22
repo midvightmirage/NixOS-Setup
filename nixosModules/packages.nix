@@ -3,7 +3,7 @@
 {
     imports =
     [
-    ./packages/jetbrains.nix
+    ./packages/overrides.nix
     ./packages/defaults.nix
     ./packages/entries.nix
     ];
@@ -53,6 +53,7 @@
       pkgs.jetbrains.dataspell
       pkgs.jetbrains.datagrip
       pkgs.jetbrains.gateway
+      pkgs.warp-terminal
 
       #pkgs.winboat
 
