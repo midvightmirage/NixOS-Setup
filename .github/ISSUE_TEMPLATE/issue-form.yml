@@ -89,7 +89,7 @@ body:
     validations:
       required: false
       
-  - type: attachment
+  - type: textarea
     id: logs
     attributes:
       label: Attach Logs
