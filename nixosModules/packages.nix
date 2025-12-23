@@ -14,9 +14,10 @@
   environment.systemPackages = with pkgs;
   [
     pkgs.home-manager
+
     # Basic Utilities
-    pkgs.btop
-    pkgs.hyfetch
+    btop
+    hyfetch
     # Add system-wide packages here
     # Examples:
     # vim
@@ -24,48 +25,47 @@
     # git
   ];
 
-  # User-specific packages for 'madeline'
   users.users.madeline =
   {
     packages = with pkgs;
     [
       # General Purpose
       kdePackages.kate
-      pkgs.floorp-bin
-      pkgs.tor-browser
-      pkgs.legcord
-      pkgs.obsidian
+      floorp-bin
+      tor-browser
+      legcord
+      obsidian
 
       # Research
-      pkgs.wireshark
+      wireshark
 
       # Development
-      pkgs.jetbrains.rider
-      pkgs.jetbrains.rust-rover
-      pkgs.jetbrains.ruby-mine
-      pkgs.jetbrains.pycharm
-      pkgs.jetbrains.webstorm
-      pkgs.jetbrains.phpstorm
-      pkgs.jetbrains.mps
-      (pkgs.jetbrains.plugins.addPlugins pkgs.jetbrains.idea [ "nixidea" ])
-      pkgs.jetbrains.clion
-      pkgs.jetbrains.goland
-      pkgs.jetbrains.dataspell
-      pkgs.jetbrains.datagrip
-      pkgs.jetbrains.gateway
-      pkgs.warp-terminal
+      jetbrains.rider
+      jetbrains.rust-rover
+      jetbrains.ruby-mine
+      jetbrains.pycharm
+      jetbrains.webstorm
+      jetbrains.phpstorm
+      jetbrains.mps
+      (jetbrains.plugins.addPlugins pkgs.jetbrains.idea [ "nixidea" ])
+      jetbrains.clion
+      jetbrains.goland
+      jetbrains.dataspell
+      jetbrains.datagrip
+      jetbrains.gateway
+      warp-terminal
 
       #pkgs.winboat
 
       # Content Creation
-      pkgs.bitwig-studio
-      pkgs.davinci-resolve
+      bitwig-studio
+      davinci-resolve
       # godot
 
       # Content Consumption
       # music app here
-      pkgs.steam
-      pkgs.adwsteamgtk
+      steam
+      adwsteamgtk
       # thunderbird
       # firefox
     ];
@@ -97,5 +97,4 @@
     #"video/*" = "vlc.desktop";
   };
 
-  # Desktop Entries
 }

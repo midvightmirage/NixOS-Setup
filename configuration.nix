@@ -2,11 +2,14 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      (import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"}/nixos")
       ./hardware-configuration.nix
       ./nixosModules/packages.nix
       ./nixosModules/services.nix
       ./nixosModules/variables.nix
+
+      ./nixosModules/home-manager.nix
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -45,7 +48,6 @@
     description = "Madeline";
     extraGroups = [ "networkmanager" "wheel" ];
   };
-
   programs.firefox.enable = true; # Temporary Firefox Install
 
   # Package Configuration
@@ -59,6 +61,7 @@
     extraPackages = with pkgs;
     [
       mesa.opencl # Enables Rusticl (OpenCL) support
+      rocmPackages.clr.icd
     ];
   };
 
