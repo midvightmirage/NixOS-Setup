@@ -88,3 +88,10 @@ body:
       render: markdown
     validations:
       required: false
+      
+  - type: upload-files
+    id: notes
+    attributes:
+      label: Generated Logs
+    validations:
+      required: false
