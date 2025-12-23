@@ -89,9 +89,10 @@ body:
     validations:
       required: false
       
-  - type: file-upload
-    id: notes
+  - type: attachment
+    id: logs
     attributes:
-      label: Generated Logs
+      label: Attach Logs
     validations:
       required: false
+
