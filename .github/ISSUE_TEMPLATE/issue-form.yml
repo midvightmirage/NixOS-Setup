@@ -1,5 +1,6 @@
 name: Issue
 labels: ["bug"]
+description: "No Description."
 
 body:
   - type: dropdown
