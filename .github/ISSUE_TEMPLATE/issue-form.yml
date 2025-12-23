@@ -89,7 +89,7 @@ body:
     validations:
       required: false
       
-  - type: upload-files
+  - type: file-upload
     id: notes
     attributes:
       label: Generated Logs
