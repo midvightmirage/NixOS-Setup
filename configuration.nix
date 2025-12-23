@@ -46,7 +46,7 @@
   {
     isNormalUser = true;
     description = "Madeline";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "render" "video"];
   };
   programs.firefox.enable = true; # Temporary Firefox Install
 

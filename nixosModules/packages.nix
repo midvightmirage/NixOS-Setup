@@ -16,6 +16,8 @@
     pkgs.home-manager
 
     # Basic Utilities
+    rocmPackages.rocminfo
+    clinfo
     btop
     hyfetch
     # Add system-wide packages here
