@@ -8,6 +8,7 @@
       ./nixosModules/packages.nix
       ./nixosModules/services.nix
       ./nixosModules/variables.nix
+      #./nixosModules/scripts.nix
 
       ./nixosModules/home-manager.nix
     ];

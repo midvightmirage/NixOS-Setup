@@ -1,0 +1,230 @@
+#!/bin/bash
+
+# Color codes
+PINK='\033[38;2;255;20;147m'
+WHITE='\033[38;2;255;255;255m'
+CYAN='\033[38;2;0;255;255m'
+RESET='\033[0m'
+SEPARATOR=":"
+
+# Check for showaddress flag
+SHOWADDRESS=false
+for arg in "$@"; do
+    if [ "$arg" = "-showaddress" ]; then
+        SHOWADDRESS=true
+        break
+    fi
+done
+
+# Function to display formatted line
+display_line() {
+    local key="$1"
+    local value="$2"
+    echo -e "${PINK}${key}${WHITE}${SEPARATOR}${CYAN}${value}${WHITE}${RESET}" 2>/dev/null
+}
+
+# System Information
+echo -e "${WHITE}╭${RESET}╮" 2>/dev/null
+echo -e "${WHITE}│${CYAN} System Information ${WHITE}│" 2>/dev/null
+echo -e "${WHITE}├${WHITE}┤" 2>/dev/null
+
+# Get hostname
+HOSTNAME=$(hostname 2>/dev/null || echo "Unknown")
+display_line "Host" "$HOSTNAME"
+
+# Get kernel
+KERNEL=$(uname -r 2>/dev/null || echo "Unknown")
+display_line "Kernel" "$KERNEL"
+
+# Get OS
+if [ -f /etc/os-release ]; then
+    OS=$(grep "^PRETTY_NAME=" /etc/os-release | cut -d'"' -f2 2>/dev/null || echo "Unknown")
+else
+    OS="Unknown"
+fi
+display_line "OS" "$OS"
+
+# Get uptime
+UPTIME=$(uptime -p 2>/dev/null || echo "Unknown")
+display_line "Uptime" "$UPTIME"
+
+# Get CPU load
+if [ -f /proc/loadavg ]; then
+    LOAD=$(awk '{print $1}' /proc/loadavg 2>/dev/null)
+    if [ ! -z "$LOAD" ]; then
+        LOAD_PERCENT=$(echo "$LOAD * 100 / 16" | bc 2>/dev/null | awk '{printf "%.0f", $1}')
+        display_line "CPU Load" "${LOAD_PERCENT}%"
+    else
+        display_line "CPU Load" "Unknown"
+    fi
+else
+    display_line "CPU Load" "Unknown"
+fi
+
+# Get packages (NixOS specific)
+if command -v nix-store >/dev/null 2>&1; then
+    PACKAGES=$(nix-store --query --requisites /nix/var/nix/profiles/system 2>/dev/null | wc -l)
+    display_line "Packages" "${PACKAGES} (nix-system)"
+else
+    display_line "Packages" "Unknown"
+fi
+
+# Get local IP
+LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "Unknown")
+display_line "Local IP" "$LOCAL_IP"
+
+# Get MAC address
+MAC=$(ip link show wlan0 2>/dev/null | grep "link/ether" | awk '{print $2}' || 
+      ip link show eth0 2>/dev/null | grep "link/ether" | awk '{print $2}' || 
+      echo "Unknown")
+display_line "MAC Address" "$MAC"
+
+# Get network
+NETWORK=$(nmcli -g DEVICE,TYPE dev list 2>/dev/null | head -1 || echo "Unknown")
+display_line "Network" "$NETWORK"
+
+# Public IPs
+if [ "$SHOWADDRESS" = true ]; then
+    # Get public IPv4
+    PUBLIC_IPV4=$(curl -s --connect-timeout 3 https://api.ipify.org 2>/dev/null || echo "Unknown")
+    display_line "Public IPv4" "$PUBLIC_IPV4"
+    
+    # Get public IPv6
+    PUBLIC_IPV6=$(curl -s --connect-timeout 3 https://api64.ipify.org 2>/dev/null || echo "Unknown")
+    display_line "Public IPv6" "$PUBLIC_IPV6"
+else
+    display_line "Public IPv4" "***.***.***.***"
+    display_line "Public IPv6" "****:****:****:****:****:****:****:****"
+fi
+
+# Desktop Environment
+echo -e "${WHITE}├${WHITE}┤" 2>/dev/null
+echo -e "${WHITE}│${CYAN} Desktop Environment ${WHITE}│" 2>/dev/null
+echo -e "${WHITE}├${WHITE}┤" 2>/dev/null
+
+# Get desktop environment
+DESKTOP_ENV="Unknown"
+if [ ! -z "$XDG_SESSION_DESKTOP" ]; then
+    DESKTOP_ENV="$XDG_SESSION_DESKTOP"
+elif [ ! -z "$XDG_SESSION_TYPE" ]; then
+    DESKTOP_ENV="$XDG_SESSION_TYPE (wayland)"
+fi
+display_line "Desktop Environment" "$DESKTOP_ENV"
+
+# Get terminal
+TERMINAL="${TERM_PROGRAM:-Unknown}"
+display_line "Terminal" "$TERMINAL"
+
+# Get shell
+SHELL=$(basename "$SHELL" 2>/dev/null || echo "Unknown")
+display_line "Shell" "$SHELL"
+
+# Get editor
+EDITOR="${EDITOR:-GNU nano}"
+display_line "Editor" "$EDITOR"
+
+# Get icons
+ICONS="Unknown"
+if command -v gsettings >/dev/null 2>&1; then
+    ICONS_THEME=$(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null | tr -d "'")
+    if [ ! -z "$ICONS_THEME" ]; then
+        ICONS="${ICONS_THEME} [GTK2/3]"
+    fi
+fi
+display_line "Icons" "$ICONS"
+
+# Get cursor
+CURSOR="Unknown"
+if command -v gsettings >/dev/null 2>&1; then
+    CURSOR_THEME=$(gsettings get org.gnome.desktop.interface cursor-theme 2>/dev/null | tr -d "'")
+    if [ ! -z "$CURSOR_THEME" ]; then
+        CURSOR="${CURSOR_THEME} [GTK2/3]"
+    fi
+fi
+display_line "Cursor" "$CURSOR"
+
+# Get resolution
+RESOLUTION="Unknown"
+if command -v xrandr >/dev/null 2>&1; then
+    RESOLUTION=$(xrandr --query 2>/dev/null | grep " connected" | grep -v "disconnected" | grep -oE '[0-9]+x[0-9]+' | head -1 || echo "Unknown")
+fi
+display_line "Resolution" "$RESOLUTION"
+
+# Get backlight
+BACKLIGHT="Unknown"
+if [ -f /sys/class/backlight/intel_backlight/brightness ] && [ -f /sys/class/backlight/intel_backlight/max_brightness ]; then
+    CURRENT=$(cat /sys/class/backlight/intel_backlight/brightness 2>/dev/null)
+    MAX=$(cat /sys/class/backlight/intel_backlight/max_brightness 2>/dev/null)
+    if [ ! -z "$CURRENT" ] && [ ! -z "$MAX" ] && [ "$MAX" -gt 0 ]; then
+        PERCENT=$((CURRENT * 100 / MAX))
+        BACKLIGHT="${PERCENT}%"
+    fi
+fi
+display_line "Backlight" "$BACKLIGHT"
+
+# Hardware Information
+echo -e "${WHITE}├${WHITE}┤" 2>/dev/null
+echo -e "${WHITE}│${CYAN} Hardware Information ${WHITE}│" 2>/dev/null
+echo -e "${WHITE}├${WHITE}┤" 2>/dev/null
+
+# Get CPU
+CPU="Unknown"
+if [ -f /proc/cpuinfo ]; then
+    CPU=$(grep "^model name" /proc/cpuinfo | head -1 | cut -d':' -f2 | sed 's/^ *//' 2>/dev/null || echo "Unknown")
+fi
+display_line "CPU" "$CPU"
+
+# Get GPUs
+GPU1="Unknown"
+GPU2="Unknown"
+if command -v lspci >/dev/null 2>&1; then
+    GPUS=$(lspci -vmm 2>/dev/null | grep -E "^VGA|^3D" || true)
+    GPU_COUNT=0
+    while IFS= read -r gpu_line; do
+        GPU_COUNT=$((GPU_COUNT + 1))
+        GPU_NAME=$(echo "$gpu_line" | cut -f3)
+        if [ $GPU_COUNT -eq 1 ]; then
+            GPU1="$GPU_NAME"
+        elif [ $GPU_COUNT -eq 2 ]; then
+            GPU2="$GPU_NAME"
+        fi
+    done <<< "$GPUS"
+fi
+display_line "GPU 1" "$GPU1"
+display_line "GPU 2" "$GPU2"
+
+# Get memory
+MEMORY="Unknown"
+if [ -f /proc/meminfo ]; then
+    TOTAL=$(grep "^MemTotal:" /proc/meminfo | awk '{print $2}' 2>/dev/null)
+    AVAILABLE=$(grep "^MemAvailable:" /proc/meminfo | awk '{print $2}' 2>/dev/null)
+    if [ ! -z "$TOTAL" ] && [ ! -z "$AVAILABLE" ] && [ "$TOTAL" -gt 0 ]; then
+        USED_PERCENT=$(((TOTAL - AVAILABLE) * 100 / TOTAL))
+        TOTAL_GB=$(echo "scale=2; $TOTAL / 1024 / 1024" | bc 2>/dev/null)
+        AVAILABLE_GB=$(echo "scale=2; $AVAILABLE / 1024 / 1024" | bc 2>/dev/null)
+        MEMORY="${AVAILABLE_GB} GiB / ${TOTAL_GB} GiB (${USED_PERCENT}%)"
+    fi
+fi
+display_line "Memory" "$MEMORY"
+
+# Get disk space
+DISK="Unknown"
+DISK_USAGE=$(df -h / 2>/dev/null | tail -1)
+if [ ! -z "$DISK_USAGE" ]; then
+    USED=$(echo "$DISK_USAGE" | awk '{print $3}')
+    TOTAL=$(echo "$DISK_USAGE" | awk '{print $2}')
+    if [ ! -z "$USED" ] && [ ! -z "$TOTAL" ]; then
+        DISK="${USED} / ${TOTAL}"
+    fi
+fi
+display_line "Disk Space" "$DISK"
+
+# Get BIOS
+BIOS="Unknown"
+if command -v dmidecode >/dev/null 2>&1; then
+    BIOS=$(dmidecode -s bios-version 2>/dev/null | head -1 || echo "Unknown")
+fi
+display_line "BIOS" "$BIOS"
+
+# End
+echo -e "${WHITE}╰${WHITE}╯" 2>/dev/null

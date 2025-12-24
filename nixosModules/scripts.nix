@@ -1,0 +1,6 @@
+{}:
+
+environment.variables =
+{
+  PATH = [ ./scripts ];
+};

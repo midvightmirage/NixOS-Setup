@@ -17,6 +17,7 @@
 
     # Basic Utilities
     rocmPackages.rocminfo
+    rustup
     clinfo
     btop
     hyfetch
@@ -76,27 +77,14 @@
   programs.steam =
   {
     enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-    extraCompatPackages = [ pkgs.proton-ge-bin ];
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+    extraCompatPackages = [ pkgs.proton-ge-bin ]; # doesnt seem to work
   };
 
   programs.wireshark.enable = true;
 
-  # Default Applications
-  xdg.mime.defaultApplications =
-  {
-    "x-scheme-handler/http" = "floorp.desktop";
-    "x-scheme-handler/https" = "floorp.desktop";
-    "text/html" = "floorp.desktop";
-    "application/xhtml+xml" = "floorp.desktop";
-    #"x-scheme-handler/mailto" = "thunderbird.desktop";
-    #"text/plain" = "kate.desktop";
-    #"application/pdf" = "okular.desktop";
-    #"image/*" = "gwenview.desktop";
-    #"audio/*" = "vlc.desktop";
-    #"video/*" = "vlc.desktop";
-  };
+
 
 }
