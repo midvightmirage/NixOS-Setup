@@ -7,6 +7,25 @@
     programs.bash.enable = true;
     home.stateVersion = "25.11";
 
+    programs.plasma.kwin.effects.blur =
+    {
+        enable = true;
+        strength = 10;
+        noiseStrength = 5;
+
+
+      programs.plasma.kwin.effects.translucency.enable = true;
+
+      programs.plasma.panels =
+      {
+        opacity = "adaptive";
+      };
+    };
+
+
+
+
+
     programs.floorp =
     {
       # Policies configuration - see https://mozilla.github.io/policy-templates/

@@ -11,6 +11,7 @@
       #./nixosModules/scripts.nix
 
       ./nixosModules/home-manager.nix
+      (import ./flakes/plasma-manager.nix).homeManagerModules.plasma-manager
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

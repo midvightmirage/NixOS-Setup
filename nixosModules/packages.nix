@@ -3,7 +3,7 @@
 {
     imports =
     [
-    <nixpkgs/nixos/modules/programs/plasma-manager.nix>
+    #<nixpkgs/nixos/modules/programs/plasma-manager.nix>
     ./packages/overrides.nix
     ./packages/defaults.nix
     ./packages/entries.nix
@@ -95,24 +95,4 @@
   programs.wireshark.enable = true;
 
   programs.plasma.enable = true;
-  programs.plasma =
-  {
-    # Enable blur effect for transparent backgrounds (tooltips, panels, menus)
-    kwin.effects.blur =
-    {
-      enable = true;
-      strength = 10;        # 1-15, higher = more blur
-      noiseStrength = 5;    # 0-14, adds texture to blur
-    };
-
-    # Enable translucency effects
-    kwin.effects.translucency.enable = true;
-
-    # Configure panel opacity for better blur integration
-    panels =
-    {
-      opacity = "adaptive";  # "adaptive" | "opaque" | "translucent"
-    };
-  };
-
 }
