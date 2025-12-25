@@ -3,6 +3,7 @@
 {
     imports =
     [
+    <nixpkgs/nixos/modules/programs/plasma-manager.nix>
     ./packages/overrides.nix
     ./packages/defaults.nix
     ./packages/entries.nix
@@ -14,8 +15,13 @@
   environment.systemPackages = with pkgs;
   [
     pkgs.home-manager
+    xdg-desktop-portal
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-kde
 
     # Basic Utilities
+    framework-tool
+    kdePackages.plasma-integration
     rocmPackages.rocminfo
     rustup
     clinfo
@@ -63,12 +69,15 @@
       # Content Creation
       bitwig-studio
       davinci-resolve
+      #affinity studio
       # godot
+      # obs
 
-      # Content Consumption
+      # Games
       # music app here
       steam
       adwsteamgtk
+      prismlauncher
       # thunderbird
       # firefox
     ];
@@ -85,6 +94,25 @@
 
   programs.wireshark.enable = true;
 
+  programs.plasma.enable = true;
+  programs.plasma =
+  {
+    # Enable blur effect for transparent backgrounds (tooltips, panels, menus)
+    kwin.effects.blur =
+    {
+      enable = true;
+      strength = 10;        # 1-15, higher = more blur
+      noiseStrength = 5;    # 0-14, adds texture to blur
+    };
 
+    # Enable translucency effects
+    kwin.effects.translucency.enable = true;
+
+    # Configure panel opacity for better blur integration
+    panels =
+    {
+      opacity = "adaptive";  # "adaptive" | "opaque" | "translucent"
+    };
+  };
 
 }

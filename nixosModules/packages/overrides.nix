@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 {
+
   environment.etc."jetbrains/idea.properties".text =
   ''
     idea.preferences.system.auto.save.enabled=true

@@ -1,10 +1,31 @@
 { config, pkgs, ... }:
 
 {
+  # Framework 16 Specific Settings
+  services.fprintd.enable = true;
+  services.fwupd.enable = true;
+
   # Enable the X11 windowing system
   services.xserver.enable = true;
   services.xserver.videoDrivers = [ "amdgpu" ];
 
+  # Configure GTK
+  programs.xdg.enable = true;
+  xdg.configFile."gtk-3.0/gtk.css".text =
+  ''
+    tooltip
+    {
+      -moz-appearance: none !important;
+      background: rgba(25, 25, 25, 0.7) !important;
+      backdrop-filter: blur(12px) saturate(150%) brightness(90%) !important;
+      -moz-backdrop-filter: blur(12px) saturate(150%) brightness(90%) !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 6px !important;
+      padding: 6px 10px !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    }
+  '';
   # Enable the KDE Plasma Desktop Environment
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
