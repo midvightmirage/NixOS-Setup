@@ -15,9 +15,6 @@
   environment.systemPackages = with pkgs;
   [
     pkgs.home-manager
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-kde
 
     # Basic Utilities
     framework-tool
@@ -32,6 +29,13 @@
     # vim
     # wget
     # git
+    libreoffice-qt
+    hunspell
+    hunspellDicts.en_US
+    hunspellDicts.de_DE
+    hyphenDicts.en_US
+    hyphenDicts.de_DE
+
   ];
 
   users.users.madeline =
@@ -44,6 +48,15 @@
       tor-browser
       legcord
       obsidian
+      gparted
+      thunderbird-esr
+      pidgin
+      mumble
+      mumble_overlay
+      # Privacy & Security
+      warp-plus
+
+      # Other
 
       # Research
       wireshark
@@ -63,20 +76,29 @@
       jetbrains.datagrip
       jetbrains.gateway
       warp-terminal
+      vscodium
 
       #pkgs.winboat
 
       # Content Creation
       bitwig-studio
       davinci-resolve
+      manuskript
+      
+      
+      gpu-screen-recorder-gtk
       #affinity studio
-      # godot
+      blender
+      blockbench
+      godot
       # obs
 
       # Games
       # music app here
       steam
       adwsteamgtk
+      r2modman
+      protonup-qt
       prismlauncher
       # thunderbird
       # firefox
@@ -89,10 +111,30 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
-    extraCompatPackages = [ pkgs.proton-ge-bin ]; # doesnt seem to work
+    extraCompatPackages = [ pkgs.proton-ge-bin ]; # doesnt work
   };
 
   programs.wireshark.enable = true;
-
-  programs.plasma.enable = true;
+  programs.java =
+  {
+    enable  = true;
+    package = pkgs.openjdk21;
+  };
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs;
+  [
+    gtk3
+    glib
+    libGL
+    xorg.libX11
+    xorg.libXtst
+    xorg.libXxf86vm
+    xorg.libXext
+    libglvnd
+  ];
+  services.murmur =
+  {
+    enable = true;
+    openFirewall = true;
+  };
 }

@@ -1,26 +1,30 @@
 { pkgs, ... }:
 
 {
+  imports = [ (import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"}/nixos") ];
+
   home-manager.users.madeline =
   {
-    home.packages = [ pkgs.atool pkgs.httpie ];
+    home.packages = with pkgs;
+    [
+    atool
+    httpie
+    picom
+    adwaita-icon-theme
+    ];
+
     programs.bash.enable = true;
     home.stateVersion = "25.11";
 
-    programs.plasma.kwin.effects.blur =
-    {
-        enable = true;
-        strength = 10;
-        noiseStrength = 5;
-
-
-      programs.plasma.kwin.effects.translucency.enable = true;
-
-      programs.plasma.panels =
+      home.file =
       {
-        opacity = "adaptive";
+              "kwinrc".text =
+              ''
+                [EffectBlur]
+                Enabled=true
+              '';
+
       };
-    };
 
 
 
